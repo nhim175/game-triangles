@@ -1,0 +1,29 @@
+{
+  "server": {
+    "port": 3001
+  },
+
+  "routes": [{
+    "": "./public"
+  }],
+
+  "packages": {
+    "triangles": {
+      "libs": [
+        "bower_components/underscore/underscore-min.js",
+        "bower_components/framework7/dist/js/framework7.min.js",
+        "bower_components/swiper/dist/js/swiper.min.js",
+        "bower_components/trianglify/dist/trianglify.min.js"
+      ],
+      "modules": [],
+      "paths": [
+        "./app"
+      ],
+      "target": "./public/application.js"
+    },
+    "css": {
+      "paths": "./less",
+      "target": "./public/application.css"
+    }
+  }
+}
