@@ -4,15 +4,60 @@ ResultSlide = require './result_slide'
 Slide = require './slide'
 Sound = require './sound'
 Exclamation = require './exclamation'
+Level = require './level'
 
 $$ = Dom7
 
 class Game
+  TIME_OUT = 3*1000
 
   constructor: (level) ->
     @level = level
-    @initLevel()
     @delegate = null
+    @timer = new Tock
+      countdown: true
+      interval: 30
+      callback: @onTimerTicked
+      complete: @onTimerCompleted
+    @initLevel()
+    $$('.game-over .quit-btn').once 'click', => @delegate.navigateBack()
+
+  onTimerTicked: =>
+    $$('.time').css 'width', @timer.lap()/TIME_OUT*100 + '%'
+
+  onTimerCompleted: =>
+    @lose()
+
+  onSlideTransitionEnd: (swiper) =>
+    Sound.slide()
+    win = true
+    $$('.swiper-slide-active').each ->
+      win = false if !$$(@).find('canvas').attr('data-result') 
+
+    @win() if win
+
+  win: ->
+    $$('.game-over h1').text Exclamation.getPositiveExclamation()
+    $$('.game-over h2').text "You've got a new triangle"
+    $$('.game-over').addClass('show')
+    setTimeout ->
+      $$('.game-over').addClass('win')
+    , 100
+    $$('.back-btn').addClass('hide')
+    $$('.game-over .next-btn').once 'click', @delegate.onNextLevelClicked
+    @timer.stop()
+    Level.passCurrentLevel()
+    Level.unlockNextLevel()
+
+  lose: ->
+    $$('.game-over h1').text Exclamation.getNegativeExclamation()
+    $$('.game-over h2').text "Time's up"
+    $$('.game-over').addClass('show')
+    setTimeout ->
+      $$('.game-over').addClass('lose')
+    , 100
+    $$('.back-btn').addClass('hide')
+    $$('.game-over .play-again-btn').once 'click', => @initLevel()
 
   initLevel: ->
     defaults = 
@@ -60,23 +105,11 @@ class Game
     _class = "cols-#{ level.cols } rows-#{level.rows}"
     $$('.slices').addClass(_class)
 
-    onSlideTransitionEnd = (swiper) ->
-      Sound.slide()
-      win = true
-      $$('.swiper-slide-active').each ->
-        win = false if !$$(@).find('canvas').attr('data-result') 
-
-      if win
-        $$('.game-over h1').text Exclamation.getPositiveExclamation()
-        $$('.game-over').addClass('show')
-        setTimeout ->
-          $$('.game-over').addClass('win')
-        , 100
-        $$('.back-btn').addClass('hide')
+    @timer.start TIME_OUT  
+    # bind events
 
     Swiper '.swiper-container', 
-      onTransitionEnd: onSlideTransitionEnd
-
+      onTransitionEnd: @onSlideTransitionEnd
 
     $$('.back-btn').removeClass('hide').click =>
       @delegate.navigateBack()

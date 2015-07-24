@@ -13,7 +13,8 @@
         "bower_components/underscore/underscore-min.js",
         "bower_components/framework7/dist/js/framework7.min.js",
         "bower_components/swiper/dist/js/swiper.min.js",
-        "bower_components/trianglify/dist/trianglify.min.js"
+        "bower_components/trianglify/dist/trianglify.min.js",
+        "bower_components/tock/tock.min.js"
       ],
       "modules": [],
       "paths": [

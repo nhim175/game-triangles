@@ -28,14 +28,18 @@ class Level
 
   currentLevel = levels[0]
 
-  @getCurrentLevel: () -> currentLevel
+  @getCurrentLevel: -> currentLevel
 
   @setCurrentLevel: (level) -> currentLevel = level
 
-  @getNextLevel: () -> @findById(@getCurrentLevel().id + 1)
+  @getNextLevel: -> @findById(@getCurrentLevel().id + 1)
+
+  @passCurrentLevel: -> currentLevel.passed = true
+
+  @unlockNextLevel: -> if nextLevel = @getNextLevel() then nextLevel.unlocked = true
 
   @findById: (id) -> _.findWhere levels, id: parseInt(id)
 
-  @all: () -> levels
+  @all: -> levels
 
 module.exports = Level

@@ -38,9 +38,6 @@ class App
       game.delegate = @
       game.initLevel()
 
-    #TODO: bind once, when the game over popup shows
-    $$('.game-over .next-btn').on 'click', @onNextLevelClicked
-
   onNextLevelClicked: (e) =>
     e.preventDefault()
     e.stopPropagation()
