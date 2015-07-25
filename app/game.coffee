@@ -10,7 +10,7 @@ Triangle = require './triangle'
 $$ = Dom7
 
 class Game
-  TIME_OUT = 3*1000
+  TIME_OUT = 300*1000
   isOver = false
 
   constructor: (level) ->
@@ -68,6 +68,7 @@ class Game
     @timer.stop()
     Level.passCurrentLevel()
     Level.unlockNextLevel()
+    Level.sync()
     @delegate.buildLevelList()
 
   lose: ->
@@ -87,7 +88,8 @@ class Game
     
     result = Triangle.getResultForLevel(level)
 
-    $$('.slices').html('')
+    # remove classes of previous game, for example rows-* cols-*
+    $$('.slices').removeAttr('class').addClass('slices').html('')
     for row in [0..level.rows-1]
       
       $$row = $$('<div/>').addClass('triangle-row')
@@ -104,10 +106,13 @@ class Game
         
         slides.push result.clone()
         for slide in _.shuffle(slides)
-          slide.setTop(-row/level.rows*window.innerHeight)
+          slide
+            .setTop(-row/level.rows*window.innerHeight)
+            .setLeft(-col/level.cols*window.innerWidth)
           $$slider_wrapper.append slide.html()
 
-      $$row.append($$cell)
+        $$row.append($$cell)
+      
       $$('.slices').append($$row)
 
     _class = "cols-#{ level.cols } rows-#{level.rows}"

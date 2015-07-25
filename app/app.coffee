@@ -6,6 +6,9 @@ Triangle = require './triangle'
 
 $$ = Dom7
 
+# TODO: set to false in production
+window._debug = true
+
 class App
 
   mainView = null
@@ -22,10 +25,12 @@ class App
     myApp.onPageInit 'play', @onPlayPageInit
 
   onLevelSelected: (event) =>
-    mainView.router.load
-      url: 'play.html'
-      query:
-        id: $$(event.currentTarget).attr('data-id')
+    id = $$(event.currentTarget).attr('data-id')
+    if _debug || Level.findById(id).unlocked
+      mainView.router.load
+        url: 'play.html'
+        query:
+          id: id
 
   onPlayPageInit: (page) =>
       

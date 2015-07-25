@@ -17,6 +17,10 @@ class Slide
     @$$canvas.css('top', top + 'px')
     @
 
+  setLeft: (left) ->
+    @$$canvas.css('left', left + 'px')
+    @    
+
   html: ->
     @$$el.html('')
     @$$el.append @$$canvas
