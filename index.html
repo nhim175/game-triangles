@@ -34,7 +34,10 @@
     <script id="level-item-template" type="text/template">
     <div class="row">
     {{#each levels}}
-      <div class="col-33 item level-locked" data-id="{{id}}"></div>
+      <div class="col-33 item
+        {{#if unlocked}}level-unlocked{{else}}level-locked{{/if}}
+        {{#if passed}}level-passed{{/if}}
+        " data-id="{{id}}"></div>
     {{/each}}
     </div>
     </script>

@@ -2,6 +2,7 @@
 # Email: nhim175@gmail.com
 Level = require './level'
 Game = require './game'
+Triangle = require './triangle'
 
 $$ = Dom7
 
@@ -20,8 +21,6 @@ class App
 
     myApp.onPageInit 'play', @onPlayPageInit
 
-    $$('.level-list .item').on 'click', @onLevelSelected
-
   onLevelSelected: (event) =>
     mainView.router.load
       url: 'play.html'
@@ -38,20 +37,6 @@ class App
       game.delegate = @
       game.initLevel()
 
-  onNextLevelClicked: (e) =>
-    e.preventDefault()
-    e.stopPropagation()
-
-    level = Level.getNextLevel()
-
-    if level
-      Level.setCurrentLevel(level)
-      game = new Game(level)
-      game.delegate = @
-      game.initLevel()
-    else
-      console.log('no more levels')
-
   navigateBack: ->
     mainView.router.back()
 
@@ -61,5 +46,10 @@ class App
     renderedList = levelItemTemplate
       levels: Level.all()
     $$('.level-list').html(renderedList)
+    $$('.level-list .item').on 'click', @onLevelSelected
+    $$('.level-list .level-passed').each ->
+      id = parseInt $$(@).attr('data-id')
+      level = Level.findById id
+      $$(@).append $$(Triangle.getThumbForLevel(level))
 
 module.exports = App

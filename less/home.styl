@@ -1,16 +1,16 @@
 @font-face
   font-family 'Moon Flower'
-  src url('../fonts/MoonFlower.ttf') format('truetype')
+  src url('./fonts/MoonFlower.ttf') format('truetype')
   font-weight 400
   font-style normal
   font-family 'Moon Flower'
-  src url('../fonts/MoonFlowerBold.ttf') format('truetype')
+  src url('./fonts/MoonFlowerBold.ttf') format('truetype')
   font-weight 700
   font-style normal
 
 .view-main
   [data-page=index]
-    background url('../img/bg.png') no-repeat top left
+    background url('./img/bg.png') no-repeat top left
     background-size cover
 
 .center
@@ -42,11 +42,19 @@
       margin-bottom 15px
       box-shadow 0px 2px 2px rgba(0,0,0,0.2)
       border-radius 5px
+      overflow hidden
+      
   .level-locked
-    background url('../img/level-locked.png') no-repeat center center
+    background url('./img/level-locked.png') no-repeat center center
     background-size 25%
+    
+  .level-unlocked
+    background url('./img/level-unlocked.png') no-repeat center center
+    background-size 60%
 
 html
+  -webkit-user-select: none
+  
   &.with-statusbar-overlay
     body
       padding-top 0

@@ -4,7 +4,7 @@
 class Level
 
   levels = [
-    {id: 1, rows: 2, cols: 1, slices_per_cell: 2, cell_size: 75, variance: 0.75, x_colors: 'YlGnBu', y_colors: 'match_x'},
+    {id: 1, rows: 2, cols: 1, slices_per_cell: 2, cell_size: 75, variance: 0.75, x_colors: 'YlGnBu', y_colors: 'match_x', unlocked: true},
     {id: 2, rows: 2, cols: 1, slices_per_cell: 3, cell_size: 75, variance: 0.75, x_colors: 'YlOrRd', y_colors: 'match_x'},
     {id: 3, rows: 2, cols: 1, slices_per_cell: 4, cell_size: 75, variance: 0.75, x_colors: 'GnBu', y_colors: 'match_x'},
     {id: 4, rows: 3, cols: 1, slices_per_cell: 3, cell_size: 75, variance: 0.75, x_colors: 'YlOrBr', y_colors: 'match_x'},

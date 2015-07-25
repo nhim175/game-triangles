@@ -5,11 +5,13 @@ Slide = require './slide'
 Sound = require './sound'
 Exclamation = require './exclamation'
 Level = require './level'
+Triangle = require './triangle'
 
 $$ = Dom7
 
 class Game
   TIME_OUT = 3*1000
+  isOver = false
 
   constructor: (level) ->
     @level = level
@@ -29,12 +31,30 @@ class Game
     @lose()
 
   onSlideTransitionEnd: (swiper) =>
+    return if isOver
     Sound.slide()
     win = true
     $$('.swiper-slide-active').each ->
       win = false if !$$(@).find('canvas').attr('data-result') 
 
     @win() if win
+
+  onNextLevelClicked: (e) =>
+    e.preventDefault()
+    e.stopPropagation()
+
+    level = Level.getNextLevel()
+
+    if level
+      Level.setCurrentLevel(level)
+      @level = level
+      @initLevel()
+    else
+      console.log('no more levels')
+
+  onBackBtnClicked: =>
+    @timer.stop()
+    @delegate.navigateBack()
 
   win: ->
     $$('.game-over h1').text Exclamation.getPositiveExclamation()
@@ -44,10 +64,11 @@ class Game
       $$('.game-over').addClass('win')
     , 100
     $$('.back-btn').addClass('hide')
-    $$('.game-over .next-btn').once 'click', @delegate.onNextLevelClicked
+    $$('.game-over .next-btn').once 'click', @onNextLevelClicked
     @timer.stop()
     Level.passCurrentLevel()
     Level.unlockNextLevel()
+    @delegate.buildLevelList()
 
   lose: ->
     $$('.game-over h1').text Exclamation.getNegativeExclamation()
@@ -58,26 +79,13 @@ class Game
     , 100
     $$('.back-btn').addClass('hide')
     $$('.game-over .play-again-btn').once 'click', => @initLevel()
+    isOver = true
 
   initLevel: ->
-    defaults = 
-      cell_size: 75
-      variance: 0.75
-      x_colors: 'random'
-      y_colors: 'match_x'
-      palette: Trianglify.colorbrewer
-      color_space: 'lab'
-      color_function: false
-      stroke_width: 1.51
-      width: window.innerWidth
-      height: window.innerHeight
-      seed: null
-
+    isOver = false
     level = @level
-
-    _.defaults(level, defaults)
     
-    result = new ResultSlide(_.pick(level, 'cell_size', 'variance', 'x_colors', 'y_colors', 'palette', 'color_space', 'color_function', 'stroke_width', 'width', 'height', 'seed'))
+    result = Triangle.getResultForLevel(level)
 
     $$('.slices').html('')
     for row in [0..level.rows-1]
@@ -91,7 +99,7 @@ class Game
         $$cell.append($$slider_wrapper)
         slides = []
         for slice in [0..level.slices_per_cell-2]
-          slide = new Slide(defaults)
+          slide = Triangle.getRandomSlide()
           slides.push(slide)
         
         slides.push result.clone()
@@ -111,8 +119,8 @@ class Game
     Swiper '.swiper-container', 
       onTransitionEnd: @onSlideTransitionEnd
 
-    $$('.back-btn').removeClass('hide').click =>
-      @delegate.navigateBack()
+    $$('.back-btn').removeClass('hide').click @onBackBtnClicked
+      
 
     if $$('.game-over').hasClass('show')
       $$('.game-over').once 'webkitTransitionEnd transitionend', (e) ->
