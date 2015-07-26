@@ -11,29 +11,33 @@ window._debug = true
 
 class App
 
-  mainView = null
+  _mainView = null
+  _app = null
 
   constructor: ->
 
-    myApp = new Framework7()
-    mainView = myApp.addView '.view-main', 
+    _app = new Framework7()
+    _mainView = _app.addView '.view-main', 
       dynamicNavbar: true
       swipeBackPage: false
 
     @buildLevelList()
 
-    myApp.onPageInit 'play', @onPlayPageInit
+    _app.onPageInit 'play', @onPlayPageInit
 
   onLevelSelected: (event) =>
+    event.preventDefault()
     id = $$(event.currentTarget).attr('data-id')
     if _debug || Level.findById(id).unlocked
-      mainView.router.load
-        url: 'play.html'
-        query:
-          id: id
+      _app.showIndicator()
+      setTimeout ->
+        _mainView.router.load
+          url: 'play.html'
+          query:
+            id: id
+      , 0
 
   onPlayPageInit: (page) =>
-      
     level = Level.findById(page.query.id)
 
     if level
@@ -41,9 +45,12 @@ class App
       game = new Game(level)
       game.delegate = @
       game.initLevel()
+      setTimeout ->
+        _app.hideIndicator()
+      , 0
 
   navigateBack: ->
-    mainView.router.back()
+    _mainView.router.back()
 
   buildLevelList: ->
     levelItemTemplateSource = $$('#level-item-template').html()
