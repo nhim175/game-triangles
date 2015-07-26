@@ -25,7 +25,7 @@ class Game
     $$('.game-over .quit-btn').once 'click', => @delegate.navigateBack()
 
   onTimerTicked: =>
-    $$('.time').css 'width', @timer.lap()/TIME_OUT*100 + '%'
+    $$('.time').css 'width', @timer.lap()/(Level.getCurrentLevel().time*1000 or TIME_OUT)*100 + '%'
 
   onTimerCompleted: =>
     @lose()
@@ -104,8 +104,8 @@ class Game
           slide = Triangle.getRandomSlide()
           slides.push(slide)
         
-        slides.push result.clone()
-        for slide in _.shuffle(slides)
+        slides.insert (level.result[col + row] - 1), result.clone()
+        for slide in slides
           slide
             .setTop(-row/level.rows*window.innerHeight)
             .setLeft(-col/level.cols*window.innerWidth)
@@ -118,7 +118,7 @@ class Game
     _class = "cols-#{ level.cols } rows-#{level.rows}"
     $$('.slices').addClass(_class)
 
-    @timer.start TIME_OUT  
+    @timer.start(level.time*1000 or TIME_OUT)
     # bind events
 
     Swiper '.swiper-container', 

@@ -1,6 +1,10 @@
 # Author: Thinh Pham
 # Email: nhim175@gmail.com
 
+Array.prototype.insert = (index) ->
+  @splice.apply @, [index, 0].concat(Array.prototype.slice.call(arguments, 1))
+  @
+
 class Util 
 
   @cloneCanvas: (oldCanvas) -> 
